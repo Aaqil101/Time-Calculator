@@ -117,14 +117,8 @@ class ColorSchemes {
         {   ; Tokyo Night
             name: "Tokyo Night",
             bg: "1A1B26",
-            font: "A9B1D6",
+            font: "ffffff",
             btn: "7AA2F7"
-        },
-        {   ; Cyberpunk
-            name: "Cyberpunk",
-            bg: "2B213A",
-            font: "FF0055",
-            btn: "00FF9F"
         },
         {   ; Catppuccin Mocha
             name: "Catppuccin",
@@ -141,7 +135,7 @@ class ColorSchemes {
         {   ; One Dark Pro
             name: "One Dark",
             bg: "282C34",
-            font: "ABB2BF",
+            font: "ffffff",
             btn: "98C379"
         },
         {   ; GitHub Dark
@@ -167,12 +161,6 @@ class ColorSchemes {
             bg: "292D3E",
             font: "BFC7D5",
             btn: "82AAFF"
-        },
-        {   ; Rose Pine
-            name: "Rose Pine",
-            bg: "191724",
-            font: "E0DEF4",
-            btn: "EBBCBA"
         },
         {   ; Ayu Dark
             name: "Ayu",
@@ -201,7 +189,7 @@ class ColorSchemes {
         {   ; Moonlight
             name: "Moonlight",
             bg: "1E2030",
-            font: "C8D3F5",
+            font: "ffffff",
             btn: "82AAFF"
         },
         {   ; Horizon
@@ -213,7 +201,7 @@ class ColorSchemes {
         {   ; Night Owl
             name: "Night Owl",
             bg: "011627",
-            font: "D6DEEB",
+            font: "ffffff",
             btn: "7FDBCA"
         },
         {   ; Material Deep Ocean
