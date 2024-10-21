@@ -5,7 +5,7 @@
  * @author Aaqil Ilyas
  * @link (https://github.com/Aaqil101/Time-Calculator)
  * @created 2024-10-21
- * @version 1.3.0
+ * @version 1.4.0
  * @copyright 2024 Aaqil Ilyas
  **************************************************************************/
 
@@ -51,10 +51,13 @@ SetDefaultMouseSpeed 0
 #Include Lib\ColorSchemes.ahk
 
 ; Variables (keeping original variables)
-ErrorTimer := 1.25
-EDIT_Y_AXIS := 80
+ERRORTIMER := 1.25
+EDIT_Y_AXIS := 110
 TEXT_Y_AXIS := EDIT_Y_AXIS + 3
-btnY := EDIT_Y_AXIS + 33
+BTN_Y := EDIT_Y_AXIS + 33
+PATTERN_TEXT_Y := 40
+SHOW_WIDTH := 410
+SHOW_HEIGHT := 200
 fadeSteps := 10
 fadeInterval := 100
 currentOpacity := 255
@@ -68,7 +71,11 @@ TIME_CALCULATOR := A_ScriptDir "\Lib\Icons\TC_Icon.png"
 TraySetIcon(TIME_CALCULATOR)
 
 ; Create the main GUI window
-tCal := GuiExt("AlwaysOnTop", "Time to Hoursz Calculator")
+tCal := GuiExt("AlwaysOnTop -Caption +Border")
+
+; Add title bar
+tCal.SetFont("s12 Bold cwhite", "Segoe UI")
+tCal.AddText("x10 y10 h30", "Time to Hours Calculator")
 
 tCal.SetDarkTitle()
 tCal.SetDarkMenu()
@@ -78,6 +85,7 @@ textControls := []
 
 ; Select random scheme at startup
 randomScheme := ColorSchemes.Schemes[Random(1, ColorSchemes.Schemes.Length)]
+; Msgbox(randomScheme.name, "Random Color Scheme")
 
 ; Function to update GUI colors
 UpdateColors(scheme) {
@@ -91,6 +99,7 @@ UpdateColors(scheme) {
     ; Update button colors
     calculatePatternBtn.SetColor(btnColor, fontColor, 0, 0, 9)
     calculateFieldsBtn.SetColor(btnColor, fontColor, 0, 0, 9)
+    closeBtn.SetColor("aa2031", fontColor, 0, 0, 9)
     
     ; Update text controls
     for ctrl in textControls {
@@ -106,8 +115,8 @@ CustomMsgBox.AddColorScheme("Error", "FF0000", "FFFFFF", "d46666")
 
 ; Pattern input section
 tCal.SetFont("s10 Bold cwhite", "JetBrains Mono")
-patternText := tCal.AddText("x10 y10", "Enter time in format HH:MM:SS (e.g., 34:03:11)")
-timeEdit := tCal.AddEdit("x10 y30 w390 c313131", "")
+patternText := tCal.AddText("x10 y" PATTERN_TEXT_Y, "Enter time in format HH:MM:SS (e.g., 34:03:11)")
+timeEdit := tCal.AddEdit("x10 y" PATTERN_TEXT_Y + 20 " w390 c313131", "")
 
 ; Individual fields section
 separateText := tCal.AddText("x10 y" (TEXT_Y_AXIS - 25), "Enter values separately")
@@ -122,12 +131,23 @@ tCal.Add("Text", "x" 10 + 120 + 140 " y" TEXT_Y_AXIS, "Seconds:")
 secondsEdit := tCal.AddEdit("Limit2 Number x" 60 + 140 + 140 " y" EDIT_Y_AXIS " w60 vSeconds c313131")
 
 ; Add calculate buttons
-calculatePatternBtn := tCal.AddButton("x10 y" btnY " w140", "Calculate from Pattern")
-calculateFieldsBtn := tCal.AddButton("x160 y" btnY " w140", "Calculate from Fields")
+calculatePatternBtn := tCal.AddButton("x10 y" BTN_Y " w140", "Calculate from Pattern")
+calculateFieldsBtn := tCal.AddButton("x160 y" BTN_Y " w140", "Calculate from Fields")
+closeBtn := tCal.AddButton("x" 10 + 360 " y" 8 " w30", "✖")
+closeBtn.OnEvent("Click", (*) => ExitApp())
+
 
 ; Result display
 tCal.SetFont("s10 Bold c48ff00", "JetBrains Mono")
-resultText := tCal.AddText("x310 y" 115 " w80")
+resultText := tCal.AddText("x310 y" BTN_Y + 15 " w80")
+
+; Make window draggable
+OnMessage(0x201, WM_LBUTTONDOWN)
+WM_LBUTTONDOWN(wParam, lParam, msg, hwnd) {
+    static HTCAPTION := 2
+    if (hwnd = tCal.Hwnd)
+        PostMessage(0xA1, HTCAPTION)
+}
 
 ; Rest of the original functions
 TimeToHours(hours, minutes, seconds) {
@@ -200,7 +220,7 @@ ShowError(message) {
     msg.SetPosition(240, 118)
     msg.SetColorScheme("Error")
     msg.SetOptions("ToolWindow", "AlwaysOnTop")
-    msg.SetCloseTimer(ErrorTimer)
+    msg.SetCloseTimer(ERRORTIMER)
     TraySetIcon(TIME_CALCULATOR)
     msg.Show()
 }
@@ -256,4 +276,11 @@ CheckEnterFields(*) {
 UpdateColors(randomScheme)
 
 ; Show the GUI
-tCal.Show("Center")
+tCal.Show("w" SHOW_WIDTH " h" SHOW_HEIGHT " Center")
+
+; Calculate the "center" position
+; Move the mouse to the "center" of the wcGui window
+MouseMove(
+    SHOW_WIDTH / 2,
+    SHOW_HEIGHT / 2
+)
