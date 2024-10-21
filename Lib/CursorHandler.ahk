@@ -193,7 +193,11 @@ WM_MOUSEMOVE(wParam, lParam, msg, hwnd) {
             DllCall("SetCursor", "UInt", IBeamCursor)
         if (control == "Edit3")
             DllCall("SetCursor", "UInt", IBeamCursor)
-        if (control == "calculateBtn")
+        if (control == "Edit4")
             DllCall("SetCursor", "UInt", IBeamCursor)
+        if (control == "calculatePatternBtn")
+            DllCall("SetCursor", "UInt", HandCursor)
+        if (control == "calculateFieldsBtn")
+            DllCall("SetCursor", "UInt", HandCursor)
     }
 }

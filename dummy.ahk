@@ -1,130 +1,100 @@
-#Requires AutoHotkey v2.0
+/************************************************************************
+ * @description Converts hours, minutes, and seconds into hours using two input methods.
+ * @license GPL-3.0
+ * @file time-calculator.ahk
+ * @author Original: Aaqil Ilyas, Modified by Claude
+ * @link (https://github.com/Aaqil101/FF-Creation)
+ * @created 2024-10-20
+ * @version 1.2.2
+ * @copyright 2024 Aaqil Ilyas
+ **************************************************************************/
 
-; Modern GUI Styles Library
-class ModernStyles {
-    static BackColor := "FFFFFF"  ; White background
-    static TextColor := "000000"  ; Black text
-    static AccentColor := "4CAF50"  ; Material Green
-    static Gray := "E0E0E0"  ; Light gray for borders
-    
-    static StyleEdit(ctl) {
-        ctl.SetFont("s10", "Segoe UI")
-        ctl.OnEvent("Focus", ObjBindMethod(this, "EditFocus"))
-        ctl.OnEvent("LoseFocus", ObjBindMethod(this, "EditLoseFocus"))
-    }
-    
-    static StyleButton(ctl) {
-        ctl.SetFont("s10", "Segoe UI")
-        ctl.OnEvent("Focus", ObjBindMethod(this, "ButtonFocus"))
-        ctl.OnEvent("LoseFocus", ObjBindMethod(this, "ButtonLoseFocus"))
-    }
-    
-    static EditFocus(ctl, *) {
-        this.DrawBorder(ctl.Hwnd, this.AccentColor)
-    }
-    
-    static EditLoseFocus(ctl, *) {
-        this.DrawBorder(ctl.Hwnd, this.Gray)
-    }
-    
-    static ButtonFocus(ctl, *) {
-        this.DrawBorder(ctl.Hwnd, this.AccentColor)
-    }
-    
-    static ButtonLoseFocus(ctl, *) {
-        this.DrawBorder(ctl.Hwnd, this.Gray)
-    }
-    
-    static DrawBorder(hwnd, color) {
-        color := "0x" . color
-        RECT := Buffer(16)
-        DllCall("GetClientRect", "Ptr", hwnd, "Ptr", RECT)
-        hDC := DllCall("GetDC", "Ptr", hwnd)
-        pen := DllCall("CreatePen", "Int", 0, "Int", 2, "UInt", color)
-        DllCall("SelectObject", "Ptr", hDC, "Ptr", pen)
-        DllCall("Rectangle", "Ptr", hDC, "Int", 0, "Int", 0, "Int", NumGet(RECT, 8, "Int"), "Int", NumGet(RECT, 12, "Int"))
-        DllCall("DeleteObject", "Ptr", pen)
-        DllCall("ReleaseDC", "Ptr", hwnd, "Ptr", hDC)
-    }
-}
+#Requires Autohotkey v2.0
 
-; Window dimensions
-windowWidth := 440
-windowHeight := 180
-padding := 20
+SetWorkingDir(A_ScriptDir)  ; Ensures a consistent starting directory.
+#SingleInstance Force ;Only launch anstance of this script.
+Persistent ;Will keep it running
 
-; Calculate positions
-headerHeight := 40
-inputRowY := headerHeight + padding
-buttonRowY := inputRowY + 40
+; Set the default mouse speed to 0
+; This will make the mouse move instantly to its destination
+; without any acceleration or deceleration
+SetDefaultMouseSpeed 0
 
-; Input field dimensions
-labelWidth := 60
-editWidth := 60
-editHeight := 25
-groupSpacing := 30
+/*
+* Include the GuiEnhancerKit library, which provides a set of functions to enhance the look and feel of AutoHotkey GUIs.
+* For more information, see https://github.com/nperovic/GuiEnhancerKit
 
-; Calculate positions for each input group
-totalInputWidth := (labelWidth + editWidth) * 3 + groupSpacing * 2
-startX := (windowWidth - totalInputWidth) // 2
+* Include the ColorButton library, which allows you to create custom buttons.
+* For more information, see https://github.com/nperovic/ColorButton.ahk
+
+* Include the CursorHandler library, which allows you to handle cursors.
+* For more information, see https://www.youtube.com/watch?v=jn83VAU3tBw
+
+* Include the CustomMsgbox library, which allows you to create custom message boxes.
+* For more information, see https://github.com/Aaqil101/Custom-Libraries/tree/master/Custom%20Msgbox
+
+* Include the ToolTipEx library, which allows you to create custom tooltips.
+* For more information, see https://github.com/nperovic/ToolTipEx
+*/
+
+#Include Lib\GuiEnhancerKit.ahk
+#Include Lib\ColorButton.ahk
+#Include Lib\CursorHandler.ahk
+#Include Lib\CustomMsgbox.ahk
+#Include Lib\ToolTipEx.ahk
+
+; Variables
+ErrorTimer := 1
+EDIT_Y_AXIS := 80
+TEXT_Y_AXIS := EDIT_Y_AXIS + 3
+btnY := EDIT_Y_AXIS + 33
+fadeSteps := 10  ; Number of fade steps
+fadeInterval := 100  ; Milliseconds between each fade step (100ms * 10 steps = 1 second total)
+currentOpacity := 255  ; Start with full opacity
+bgColor := "313131"
+FF_ERROR := A_ScriptDir "\Lib\Icons\FF_Error.png"
+FF_STOP := A_ScriptDir "\Lib\Icons\FF_Stop.png"
+FF_INFO := A_ScriptDir "\Lib\Icons\FF_Info.png"
+FF_QUESTION := A_ScriptDir "\Lib\Icons\FF_Question.png"
+
+CustomMsgBox.AddColorScheme("Error", "FF0000", "FFFFFF", "d46666")
 
 ; Create the main GUI window
-MyGui := Gui("+AlwaysOnTop -Caption +Border")
+tCal := GuiExt("AlwaysOnTop", "Time to Hours Calculator")
 
-; Add title bar
-MyGui.SetFont("s12 Bold", "Segoe UI")
-titleBar := MyGui.Add("Text", Format("x{1} y{2} w{3} h{4}", padding, padding/2, windowWidth-padding*2, headerHeight), "Time to Hours Calculator")
+tCal.SetDarkTitle()
+tCal.SetDarkMenu()
+tCal.BackColor := bgColor
 
-; Create input boxes with perfect alignment
-MyGui.SetFont("s10", "Segoe UI")
+; Pattern input section
+tCal.SetFont("s10 Bold cwhite", "JetBrains Mono")
+tCal.AddText("x10 y10", "Enter time in format HH:MM:SS (e.g., 34:03:11)")
+timeEdit := tCal.AddEdit("x10 y30 w390 c" bgColor, "")
 
-; Hours group
-hoursLabelX := startX
-hoursEditX := hoursLabelX + labelWidth
-MyGui.Add("Text", Format("x{1} y{2}", hoursLabelX, inputRowY+3), "Hours:")
-hoursEdit := MyGui.Add("Edit", Format("x{1} y{2} w{3} h{4}", hoursEditX, inputRowY, editWidth, editHeight), "")
-ModernStyles.StyleEdit(hoursEdit)
+tCal.SetFont("s10 Bold cwhite", "JetBrains Mono")
 
-; Minutes group
-minutesLabelX := hoursEditX + editWidth + groupSpacing
-minutesEditX := minutesLabelX + labelWidth
-MyGui.Add("Text", Format("x{1} y{2}", minutesLabelX, inputRowY+3), "Minutes:")
-minutesEdit := MyGui.Add("Edit", Format("x{1} y{2} w{3} h{4}", minutesEditX, inputRowY, editWidth, editHeight), "")
-ModernStyles.StyleEdit(minutesEdit)
+; Individual fields section
+tCal.AddText("x10 y" (TEXT_Y_AXIS - 25), "Enter values separately")
 
-; Seconds group
-secondsLabelX := minutesEditX + editWidth + groupSpacing
-secondsEditX := secondsLabelX + labelWidth
-MyGui.Add("Text", Format("x{1} y{2}", secondsLabelX, inputRowY+3), "Seconds:")
-secondsEdit := MyGui.Add("Edit", Format("x{1} y{2} w{3} h{4}", secondsEditX, inputRowY, editWidth, editHeight), "")
-ModernStyles.StyleEdit(secondsEdit)
+tCal.Add("Text", "x10 y" TEXT_Y_AXIS, "Hours:")
+hoursEdit := tCal.AddEdit("x60 y" EDIT_Y_AXIS " w60 vHours c" bgColor)
 
-; Calculate button and result positioning
-buttonWidth := 100
-buttonHeight := 30
-buttonX := (windowWidth - buttonWidth) // 2
-resultTextWidth := 200
+tCal.Add("Text", "x" 10 + 120 " y" TEXT_Y_AXIS, "Minutes:")
+minutesEdit := tCal.AddEdit("Number x" 60 + 140 " y" EDIT_Y_AXIS " w60 vMinutes c" bgColor)
 
-calculateBtn := MyGui.Add("Button", Format("x{1} y{2} w{3} h{4}", buttonX, buttonRowY, buttonWidth, buttonHeight), "Calculate")
-ModernStyles.StyleButton(calculateBtn)
+tCal.Add("Text", "x" 10 + 120 + 140 " y" TEXT_Y_AXIS, "Seconds:")
+secondsEdit := tCal.AddEdit("Number x" 60 + 140 + 140 " y" EDIT_Y_AXIS " w60 vSeconds c" bgColor)
 
-; Result text centered below button
-resultTextX := (windowWidth - resultTextWidth) // 2
-resultText := MyGui.Add("Text", Format("x{1} y{2} w{3} h{4} Center", resultTextX, buttonRowY + buttonHeight + padding/2, resultTextWidth, 25), "")
-resultText.SetFont("s10", "Segoe UI")
+; Add calculate buttons for both methods
+calculatePatternBtn := tCal.AddButton("x10 y" btnY " w140", "Calculate from Pattern")
+calculatePatternBtn.SetColor("008080", "FBFADA", 0, 0, 9)
 
-; Add a close button in the top right
-closeBtn := MyGui.Add("Button", Format("x{1} y{2} w30 h20", windowWidth-50, padding/2), "×")
-closeBtn.OnEvent("Click", (*) => ExitApp())
-ModernStyles.StyleButton(closeBtn)
+calculateFieldsBtn := tCal.AddButton("x160 y" btnY " w140", "Calculate from Fields")
+calculateFieldsBtn.SetColor("008080", "FBFADA", 0, 0, 9)
 
-; Make window draggable
-OnMessage(0x201, WM_LBUTTONDOWN)
-WM_LBUTTONDOWN(wParam, lParam, msg, hwnd) {
-    static HTCAPTION := 2
-    if (hwnd = MyGui.Hwnd)
-        PostMessage(0xA1, HTCAPTION)
-}
+; Result display
+tCal.SetFont("s10 Bold c48ff00", "JetBrains Mono")
+resultText := tCal.AddText("x310 y" 115 " w100")
 
 ; Function to convert time to hours
 TimeToHours(hours, minutes, seconds) {
@@ -132,42 +102,143 @@ TimeToHours(hours, minutes, seconds) {
     return Round(totalHours, 2)
 }
 
-; Button click event handler
-calculateBtn.OnEvent("Click", Calculate)
+; Function to parse time pattern and convert to hours
+ParseTimePattern(timeStr) {
+    if !RegExMatch(timeStr, "^\d+:\d{2}:\d{2}$") {
+        throw Error("Invalid time format. Please use HH:MM:SS")
+    }
 
-Calculate(*) {
-    ; Get values from input boxes
-    hours := Number(hoursEdit.Value)
-    minutes := Number(minutesEdit.Value)
-    seconds := Number(secondsEdit.Value)
+    timeParts := StrSplit(timeStr, ":")
+    hours := Number(timeParts[1])
+    minutes := Number(timeParts[2])
+    seconds := Number(timeParts[3])
+
+    if (minutes >= 60 || seconds >= 60) {
+        throw Error("Minutes and seconds must be less than 60")
+    }
+
+    return TimeToHours(hours, minutes, seconds)
+}
+
+; Handle pattern calculation
+CalculateFromPattern(*) {
+    timePattern := timeEdit.Value
+
+    if (timePattern = "") {
+        ShowError("Please enter a time pattern")
+        return
+    }
+
+    try {
+        total := ParseTimePattern(timePattern)
+        ShowResult(total)
+        timeEdit.Value := ""
+        timeEdit.Focus()
+    } catch as err {
+        ShowError(err.Message)
+        timeEdit.Focus()
+    }
+}
+
+; Handle individual fields calculation
+CalculateFromFields(*) {
+    try {
+        hours := Number(hoursEdit.Value)
+        minutes := Number(minutesEdit.Value)
+        seconds := Number(secondsEdit.Value)
+
+        if (minutes >= 60 || seconds >= 60) {
+            throw Error("Minutes and seconds must be less than 60")
+        }
+
+        total := TimeToHours(hours, minutes, seconds)
+        ShowResult(total)
+
+        hoursEdit.Value := ""
+        minutesEdit.Value := ""
+        secondsEdit.Value := ""
+        hoursEdit.Focus()
+    } catch as err {
+        ShowError("Please enter valid numbers for all fields")
+    }
+}
+
+; Helper function to show errors
+ShowError(message) {
+    TraySetIcon(FF_STOP)
+    msg := CustomMsgBox()
+    msg.SetText("Error", message)
+    msg.SetPosition(240, 118)
+    msg.SetColorScheme("Error")
+    msg.SetOptions("ToolWindow", "AlwaysOnTop")
+    msg.SetCloseTimer(ErrorTimer)
+    msg.Show()
+}
+
+; Helper function to show and copy results
+ShowResult(total) {
+    global currentOpacity, resultText
     
-    ; Validate input
-    if (hours = "" || minutes = "" || seconds = "") {
-        MsgBox "Please enter valid numbers for all fields"
+    ; Reset opacity to full
+    currentOpacity := 255
+    resultText.Value := Format("{1} hours", total)
+    A_Clipboard := total
+
+    resultText.Value := Format("{1} hours", total)
+    ToolTipEX("Result copied to clipboard!", 1)
+
+    ; Start fade timer
+    SetTimer FadeOut, fadeInterval
+}
+
+; Fade timer
+FadeOut() {
+    global currentOpacity, fadeSteps, fadeInterval, resultText
+    
+    ; Reduce opacity
+    currentOpacity -= 255 / fadeSteps
+    
+    if (currentOpacity <= 0) {
+        ; Stop the timer when fully faded
+        SetTimer(FadeOut, 0)
+        resultText.Value := ""  ; Clear the text
+        currentOpacity := 255  ; Reset opacity for next time
         return
     }
     
-    ; Calculate total hours
-    total := TimeToHours(hours, minutes, seconds)
-    
-    ; Display result
-    resultText.Value := Format("{1} hours", total)
-    
-    ; Copy result to clipboard
-    A_Clipboard := total
-    
-    ; Show tooltip indicating copy
-    ToolTip "Result copied to clipboard!"
-    SetTimer () => ToolTip(), -1000
-    
-    ; Clear input boxes
-    hoursEdit.Value := ""
-    minutesEdit.Value := ""
-    secondsEdit.Value := ""
-    
-    ; Set focus back to hours input
-    hoursEdit.Focus()
+    ; Apply the new opacity using RGB values
+    color := Format("c{:02x}{:02x}{:02x}", currentOpacity, currentOpacity, currentOpacity)
+    resultText.SetFont(color)
 }
 
-; Show the GUI centered
-MyGui.Show(Format("w{1} h{2}", windowWidth, windowHeight))
+; Button click event handlers
+calculatePatternBtn.OnEvent("Click", CalculateFromPattern)
+calculateFieldsBtn.OnEvent("Click", CalculateFromFields)
+
+/* ; Hotkey for paste in pattern field
+#HotIf WinActive("Time to Hours Calculator")
+^v::PasteTimePattern */
+
+PasteTimePattern(*) {
+    if (A_Clipboard ~= "^\d+:\d{2}:\d{2}$") {
+        timeEdit.Value := A_Clipboard
+        CalculateFromPattern()
+    }
+}
+
+; Enter key handlers
+timeEdit.OnEvent("Change", CheckEnterPattern)
+secondsEdit.OnEvent("Change", CheckEnterFields)
+
+CheckEnterPattern(*) {
+    if GetKeyState("Enter", "P")
+        CalculateFromPattern()
+}
+
+CheckEnterFields(*) {
+    if GetKeyState("Enter", "P")
+        CalculateFromFields()
+}
+
+; Show the GUI
+tCal.Show("Center")
