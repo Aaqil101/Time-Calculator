@@ -1,4 +1,44 @@
-#Requires AutoHotkey v2.0
+/************************************************************************
+ * @description Converts hours, minutes, and seconds into hours.
+ * @license GPL-3.0
+ * @file time-calculator.ahk
+ * @author Aaqil Ilyas
+ * @link (https://github.com/Aaqil101/FF-Creation)
+ * @created 2024-10-20
+ * @version 1.2.0
+ * @copyright 2024 Aaqil Ilyas
+ **************************************************************************/
+
+
+#Requires Autohotkey v2.0
+
+SetWorkingDir(A_ScriptDir)  ; Ensures a consistent starting directory.
+#SingleInstance Force ;Only launch anstance of thi5 scrxpt.
+Persistent ;Will keep it running
+
+; Set the default mouse speed to 0
+; This will make the mouse move instantly to its destination
+; without any acceleration or deceleration
+SetDefaultMouseSpeed 0
+
+/*
+* Include the GuiEnhancerKit library, which provides a set of functions to enhance the look and feel of AutoHotkey GUIs.
+* For more information, see https://github.com/nperovic/GuiEnhancerKit
+
+* Include the ColorButton library, which allows you to create custom buttons.
+* For more information, see https://github.com/nperovic/ColorButton.ahk
+
+* Include the CursorHandler library, which allows you to handle cursors.
+* For more information, see https://www.youtube.com/watch?v=jn83VAU3tBw
+
+* Include the CustomMsgbox library, which allows you to create custom message boxes.
+* For more information, see https://github.com/Aaqil101/Custom-Libraries/tree/master/Custom%20Msgbox
+*/
+
+#Include Lib\GuiEnhancerKit.ahk
+#Include Lib\ColorButton.ahk
+#Include Lib\CursorHandler.ahk
+#Include Lib\CustomMsgbox.ahk
 
 ; Modern GUI Styles Library
 class ModernStyles {
