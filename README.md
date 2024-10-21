@@ -20,19 +20,19 @@ An AutoHotkey v2 script that converts hours, minutes, and seconds into hours.
 
 ## 🛠️ Requirements
 
-🚀 [AutoHotkey v2.0](https://www.autohotkey.com/v2/) or later.
+[AutoHotkey v2.0](https://www.autohotkey.com/v2/) or later.
 
-🎨 [GuiEnhancerKit library](https://github.com/nperovic/GuiEnhancerKit), to enhance the look and feel of AutoHotkey GUIs.
+[GuiEnhancerKit library](https://github.com/nperovic/GuiEnhancerKit), to enhance the look and feel of AutoHotkey GUIs.
 
-🎨 [ColorButton library](https://github.com/nperovic/ColorButton.ahk), to create custom buttons.
+[ColorButton library](https://github.com/nperovic/ColorButton.ahk), to create custom buttons.
 
-🖱️ [CursorHandler library](https://github.com/Aaqil101/Time-Calculator/blob/master/Lib/CursorHandler.ahk), to handle mouse movement.
+[CursorHandler library](https://github.com/Aaqil101/Time-Calculator/blob/master/Lib/CursorHandler.ahk), to handle mouse movement.
 
-📝 [CustomMsgbox library](https://github.com/Aaqil101/Custom-Libraries/tree/master/Custom%20Msgbox), to create custom message boxes.
+[CustomMsgbox library](https://github.com/Aaqil101/Custom-Libraries/tree/master/Custom%20Msgbox), to create custom message boxes.
 
-💡 [ToolTipEx library](https://github.com/nperovic/ToolTipEx), to create custom tooltips.
+[ToolTipEx library](https://github.com/nperovic/ToolTipEx), to create custom tooltips.
 
-🎨 [ColorSchemes library](https://github.com/Aaqil101/Time-Calculator/blob/master/Lib/ColorSchemes.ahk), to set custom color schemes.
+[ColorSchemes library](https://github.com/Aaqil101/Time-Calculator/blob/master/Lib/ColorSchemes.ahk), to set custom color schemes.
 
 ## 🚀 Installation
 
