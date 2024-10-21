@@ -24,18 +24,6 @@ class ColorSchemes {
             font: "ffffff",
             btn: "000080"
         },
-        {   ; Green theme
-            name: "Green",
-            bg: "113311",
-            font: "ffffff",
-            btn: "20aa31"
-        },
-        {   ; Forest Green
-            name: "Forest",
-            bg: "002800",
-            font: "ffffff",
-            btn: "006400"
-        },
         {   ; Purple theme
             name: "Purple",
             bg: "331133",
