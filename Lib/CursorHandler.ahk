@@ -189,7 +189,11 @@ WM_MOUSEMOVE(wParam, lParam, msg, hwnd) {
         }
         if (control == "Edit1")
             DllCall("SetCursor", "UInt", IBeamCursor)
-        if (control == "Button")
+        if (control == "Edit2")
+            DllCall("SetCursor", "UInt", IBeamCursor)
+        if (control == "Edit3")
+            DllCall("SetCursor", "UInt", IBeamCursor)
+        if (control == "calculateBtn")
             DllCall("SetCursor", "UInt", IBeamCursor)
     }
 }
