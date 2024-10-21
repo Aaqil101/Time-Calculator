@@ -16,39 +16,39 @@ An AutoHotkey v2 script that converts hours, minutes, and seconds into hours.
 - 📊 Simple and intuitive graphical user interface (GUI) for easy input and conversion.
 - ⏱️ Real-time updates: Instant calculation as you enter time values.
 - 📂 Automatically sets the working directory to the script’s location, ensuring consistent behavior across different environments.
-- 🔒 Ensures only one instance of the script is running at any time to prevent conflicts.
+- 🔒 Ensures only one instance of the script is running to prevent conflicts.
 
 ## 🛠️ Requirements
 
-[AutoHotkey v2.0](https://www.autohotkey.com/v2/) or later. 🚀
+🚀 [AutoHotkey v2.0](https://www.autohotkey.com/v2/) or later.
 
-[GuiEnhancerKit library](https://github.com/nperovic/GuiEnhancerKit), to enhance the look and feel of AutoHotkey GUIs. 🎨
+🎨 [GuiEnhancerKit library](https://github.com/nperovic/GuiEnhancerKit), to enhance the look and feel of AutoHotkey GUIs.
 
-[ColorButton library](https://github.com/nperovic/ColorButton.ahk), to create custom buttons. 🎨
+🎨 [ColorButton library](https://github.com/nperovic/ColorButton.ahk), to create custom buttons.
 
-[CursorHandler library](https://github.com/Aaqil101/Time-Calculator/blob/master/Lib/CursorHandler.ahk), to handle mouse movement. 🖱️
+🖱️ [CursorHandler library](https://github.com/Aaqil101/Time-Calculator/blob/master/Lib/CursorHandler.ahk), to handle mouse movement.
 
-[CustomMsgbox library](https://github.com/Aaqil101/Custom-Libraries/tree/master/Custom%20Msgbox), to create custom message boxes. 📝
+📝 [CustomMsgbox library](https://github.com/Aaqil101/Custom-Libraries/tree/master/Custom%20Msgbox), to create custom message boxes.
 
-[ToolTipEx library](https://github.com/nperovic/ToolTipEx), to create custom tooltips. 💡
+💡 [ToolTipEx library](https://github.com/nperovic/ToolTipEx), to create custom tooltips.
 
-[ColorSchemes library](https://github.com/Aaqil101/Time-Calculator/blob/master/Lib/ColorSchemes.ahk), to set custom color schemes. 🎨
+🎨 [ColorSchemes library](https://github.com/Aaqil101/Time-Calculator/blob/master/Lib/ColorSchemes.ahk), to set custom color schemes.
 
 ## 🚀 Installation
 
-- Download and install [AutoHotkey v2.0](https://www.autohotkey.com/download/ahk-v2.exe). 📥
+- 📥 Download and install [AutoHotkey v2.0](https://www.autohotkey.com/download/ahk-v2.exe).
 
-- Clone or download this repository to your local machine. 💻
+- 💻 Clone or download this repository to your local machine.
 
-- Run the Time-Calculator.ahk script. 📊
+- 📊 Run the Time-Calculator.ahk script.
 
 ## 📖 Usage
 
-- After running the script, a GUI window will appear. 📝
+- After running the script, a GUI window will appear.
 
-- Enter the hours, minutes, and seconds you wish to convert. 🕒
+- 🕒 Enter the hours, minutes, and seconds you wish to convert.
 
-- Click the Convert button to see the total time in hours. 🔜
+- 🔜 Click the Convert button to see the total time in hours.
 
 ### 👤 Author
 
@@ -56,4 +56,4 @@ An AutoHotkey v2 script that converts hours, minutes, and seconds into hours.
 
 ### 📜 License
 
-This project is licensed under the GPL-3.0 License. See the LICENSE file for details. 📝
+This project is licensed under the GPL-3.0 License. See the LICENSE file for details.
