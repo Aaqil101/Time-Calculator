@@ -5,7 +5,7 @@
  * @author Aaqil Ilyas
  * @link (https://github.com/Aaqil101/Time-Calculator)
  * @created 2024-10-21
- * @version 1.2.2
+ * @version 1.3.0
  * @copyright 2024 Aaqil Ilyas
  **************************************************************************/
 
