@@ -51,7 +51,7 @@ SetDefaultMouseSpeed 0
 #Include Lib\ColorSchemes.ahk
 
 ; Variables (keeping original variables)
-ErrorTimer := 1
+ErrorTimer := 1.25
 EDIT_Y_AXIS := 80
 TEXT_Y_AXIS := EDIT_Y_AXIS + 3
 btnY := EDIT_Y_AXIS + 33
@@ -62,9 +62,13 @@ FF_ERROR := A_ScriptDir "\Lib\Icons\FF_Error.png"
 FF_STOP := A_ScriptDir "\Lib\Icons\FF_Stop.png"
 FF_INFO := A_ScriptDir "\Lib\Icons\FF_Info.png"
 FF_QUESTION := A_ScriptDir "\Lib\Icons\FF_Question.png"
+TIME_CALCULATOR := A_ScriptDir "\Lib\Icons\TC_Icon.png"
+
+; Set Tray icon
+TraySetIcon(TIME_CALCULATOR)
 
 ; Create the main GUI window
-tCal := GuiExt("AlwaysOnTop", "Time to Hours Calculator")
+tCal := GuiExt("AlwaysOnTop", "Time to Hoursz Calculator")
 
 tCal.SetDarkTitle()
 tCal.SetDarkMenu()
@@ -197,6 +201,7 @@ ShowError(message) {
     msg.SetColorScheme("Error")
     msg.SetOptions("ToolWindow", "AlwaysOnTop")
     msg.SetCloseTimer(ErrorTimer)
+    TraySetIcon(TIME_CALCULATOR)
     msg.Show()
 }
 
