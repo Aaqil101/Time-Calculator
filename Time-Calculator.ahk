@@ -85,7 +85,7 @@ textControls := []
 
 ; Select random scheme at startup
 randomScheme := ColorSchemes.Schemes[Random(1, ColorSchemes.Schemes.Length)]
-; Msgbox(randomScheme.name, "Random Color Scheme")
+Msgbox(randomScheme.name, "Random Color Scheme")
 
 ; Function to update GUI colors
 UpdateColors(scheme) {
@@ -99,7 +99,8 @@ UpdateColors(scheme) {
     ; Update button colors
     calculatePatternBtn.SetColor(btnColor, fontColor, 0, 0, 9)
     calculateFieldsBtn.SetColor(btnColor, fontColor, 0, 0, 9)
-    closeBtn.SetColor("aa2031", "FFFFFF", 0, 0, 9)
+    minimizeBtn.setColor("808080", fontColor, 0, 0, 9)
+    closeBtn.SetColor("aa2031", fontColor, 0, 0, 9)
     
     ; Update text controls
     for ctrl in textControls {
@@ -133,9 +134,12 @@ secondsEdit := tCal.AddEdit("Limit2 Number x" 60 + 140 + 140 " y" EDIT_Y_AXIS " 
 ; Add calculate buttons
 calculatePatternBtn := tCal.AddButton("x10 y" BTN_Y " w140", "Calculate from Pattern")
 calculateFieldsBtn := tCal.AddButton("x160 y" BTN_Y " w140", "Calculate from Fields")
+
+minimizeBtn := tCal.AddButton("x" 10 + 320 " y" 8 " w30", "▼")
+minimizeBtn.OnEvent("Click", (*) => WinMinimize())
+
 closeBtn := tCal.AddButton("x" 10 + 360 " y" 8 " w30", "✖")
 closeBtn.OnEvent("Click", (*) => ExitApp())
-
 
 ; Result display
 tCal.SetFont("s10 Bold c48ff00", "JetBrains Mono")
