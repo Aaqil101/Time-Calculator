@@ -85,7 +85,7 @@ textControls := []
 
 ; Select random scheme at startup
 randomScheme := ColorSchemes.Schemes[Random(1, ColorSchemes.Schemes.Length)]
-Msgbox(randomScheme.name, "Random Color Scheme")
+; Msgbox(randomScheme.name, "Random Color Scheme")
 
 ; Function to update GUI colors
 UpdateColors(scheme) {
@@ -134,12 +134,8 @@ secondsEdit := tCal.AddEdit("Limit2 Number x" 60 + 140 + 140 " y" EDIT_Y_AXIS " 
 ; Add calculate buttons
 calculatePatternBtn := tCal.AddButton("x10 y" BTN_Y " w140", "Calculate from Pattern")
 calculateFieldsBtn := tCal.AddButton("x160 y" BTN_Y " w140", "Calculate from Fields")
-
-minimizeBtn := tCal.AddButton("x" 10 + 320 " y" 8 " w30", "▼")
-minimizeBtn.OnEvent("Click", (*) => WinMinimize())
-
-closeBtn := tCal.AddButton("x" 10 + 360 " y" 8 " w30", "✖")
-closeBtn.OnEvent("Click", (*) => ExitApp())
+minimizeBtn := tCal.AddButton("x330 y8 w30", "▼")
+closeBtn := tCal.AddButton("x370 y8 w30", "✖")
 
 ; Result display
 tCal.SetFont("s10 Bold c48ff00", "JetBrains Mono")
@@ -221,7 +217,7 @@ ShowError(message) {
     TraySetIcon(FF_STOP)
     msg := CustomMsgBox()
     msg.SetText("Error", message)
-    msg.SetPosition(240, 118)
+    msg.SetPosition(SHOW_WIDTH, SHOW_HEIGHT + 255)
     msg.SetColorScheme("Error")
     msg.SetOptions("ToolWindow", "AlwaysOnTop")
     msg.SetCloseTimer(ERRORTIMER)
@@ -261,6 +257,8 @@ FadeOut() {
 ; Button event handlers
 calculatePatternBtn.OnEvent("Click", CalculateFromPattern)
 calculateFieldsBtn.OnEvent("Click", CalculateFromFields)
+minimizeBtn.OnEvent("Click", (*) => WinMinimize())
+closeBtn.OnEvent("Click", (*) => ExitApp())
 
 ; Enter key handlers
 timeEdit.OnEvent("Change", CheckEnterPattern)
