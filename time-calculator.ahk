@@ -81,13 +81,13 @@ tCal.SetFont("s10 Bold cwhite", "JetBrains Mono")
 tCal.AddText("x10 y" (TEXT_Y_AXIS - 25), "Enter values separately")
 
 tCal.Add("Text", "x10 y" TEXT_Y_AXIS, "Hours:")
-hoursEdit := tCal.AddEdit("x60 y" EDIT_Y_AXIS " w60 vHours c" bgColor)
+hoursEdit := tCal.AddEdit("Limit2 Number x60 y" EDIT_Y_AXIS " w60 vHours c" bgColor)
 
 tCal.Add("Text", "x" 10 + 120 " y" TEXT_Y_AXIS, "Minutes:")
-minutesEdit := tCal.AddEdit("Number x" 60 + 140 " y" EDIT_Y_AXIS " w60 vMinutes c" bgColor)
+minutesEdit := tCal.AddEdit("Limit2 Number x" 60 + 140 " y" EDIT_Y_AXIS " w60 vMinutes c" bgColor)
 
 tCal.Add("Text", "x" 10 + 120 + 140 " y" TEXT_Y_AXIS, "Seconds:")
-secondsEdit := tCal.AddEdit("Number x" 60 + 140 + 140 " y" EDIT_Y_AXIS " w60 vSeconds c" bgColor)
+secondsEdit := tCal.AddEdit("Limit2 Number x" 60 + 140 + 140 " y" EDIT_Y_AXIS " w60 vSeconds c" bgColor)
 
 ; Add calculate buttons for both methods
 calculatePatternBtn := tCal.AddButton("x10 y" btnY " w140", "Calculate from Pattern")
