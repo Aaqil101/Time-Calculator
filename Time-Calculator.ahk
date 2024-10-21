@@ -99,7 +99,7 @@ UpdateColors(scheme) {
     ; Update button colors
     calculatePatternBtn.SetColor(btnColor, fontColor, 0, 0, 9)
     calculateFieldsBtn.SetColor(btnColor, fontColor, 0, 0, 9)
-    closeBtn.SetColor("aa2031", fontColor, 0, 0, 9)
+    closeBtn.SetColor("aa2031", "FFFFFF", 0, 0, 9)
     
     ; Update text controls
     for ctrl in textControls {
