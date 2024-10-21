@@ -84,12 +84,6 @@ class ColorSchemes {
             font: "ffffff",
             btn: "DAA520"
         },
-        {   ; Pink theme
-            name: "Pink",
-            bg: "331122",
-            font: "ffffff",
-            btn: "FF69B4"
-        },
         {   ; Magenta theme
             name: "Magenta",
             bg: "2B0022",
@@ -125,12 +119,6 @@ class ColorSchemes {
             bg: "1E1E2E",
             font: "ffffff",
             btn: "89B4FA"
-        },
-        {   ; Synthwave
-            name: "Synthwave",
-            bg: "2B213A",
-            font: "ffffff",
-            btn: "00FF9F"
         },
         {   ; One Dark Pro
             name: "One Dark",
@@ -197,12 +185,6 @@ class ColorSchemes {
             bg: "011627",
             font: "ffffff",
             btn: "7FDBCA"
-        },
-        {   ; Material Deep Ocean
-            name: "Deep Ocean",
-            bg: "0F111A",
-            font: "ffffff",
-            btn: "84FFFF"
         }
     ]
 
