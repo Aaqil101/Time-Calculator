@@ -1,11 +1,11 @@
 /************************************************************************
  * @description Converts hours, minutes, and seconds into hours.
  * @license GPL-3.0
- * @file time-calculator.ahk
+ * @file Time-Calculator.ahk
  * @author Aaqil Ilyas
  * @link (https://github.com/Aaqil101/Time-Calculator)
  * @created 2024-10-21
- * @version 1.4.0
+ * @version 2.0.1
  * @copyright 2024 Aaqil Ilyas
  **************************************************************************/
 
@@ -41,6 +41,9 @@ SetDefaultMouseSpeed 0
 * For more information, see https://github.com/nperovic/ToolTipEx
 
 * Include the ColorSchemes library, which allows you to create custom color schemes.
+
+* Include the CueBanners library, which allows you to create placeholder for edit and combo boxes.
+* For more information, see https://github.com/Aaqil101/Custom-Libraries/tree/master/Cue%20Banners
 */
 
 #Include Lib\GuiEnhancerKit.ahk
@@ -49,6 +52,7 @@ SetDefaultMouseSpeed 0
 #Include Lib\CustomMsgbox.ahk
 #Include Lib\ToolTipEx.ahk
 #Include Lib\ColorSchemes.ahk
+#Include Lib\CueBanners.ahk
 
 ; Variables (keeping original variables)
 ERRORTIMER := 1.25
@@ -72,6 +76,7 @@ TraySetIcon(TIME_CALCULATOR)
 
 ; Create the main GUI window
 tCal := GuiExt("AlwaysOnTop -Caption +Border")
+FrameShadow(tCal.Hwnd)
 
 ; Add title bar
 tCal.SetFont("s12 Bold cwhite", "Segoe UI")
@@ -118,18 +123,22 @@ CustomMsgBox.AddColorScheme("Error", "FF0000", "FFFFFF", "d46666")
 tCal.SetFont("s10 Bold cwhite", "JetBrains Mono")
 patternText := tCal.AddText("x10 y" PATTERN_TEXT_Y, "Enter time in format HH:MM:SS (e.g., 34:03:11)")
 timeEdit := tCal.AddEdit("x10 y" PATTERN_TEXT_Y + 20 " w390 c313131", "")
+CueBanners.SetEdit(timeEdit, "HH:MM:SS", true)
 
 ; Individual fields section
 separateText := tCal.AddText("x10 y" (TEXT_Y_AXIS - 25), "Enter values separately")
 
 tCal.Add("Text", "x10 y" TEXT_Y_AXIS, "Hours:")
 hoursEdit := tCal.AddEdit("Limit2 Number x60 y" EDIT_Y_AXIS " w60 vHours c313131")
+CueBanners.SetEdit(hoursEdit, "HH", true)
 
 tCal.Add("Text", "x" 10 + 120 " y" TEXT_Y_AXIS, "Minutes:")
 minutesEdit := tCal.AddEdit("Limit2 Number x" 60 + 140 " y" EDIT_Y_AXIS " w60 vMinutes c313131")
+CueBanners.SetEdit(minutesEdit, "MM", true)
 
 tCal.Add("Text", "x" 10 + 120 + 140 " y" TEXT_Y_AXIS, "Seconds:")
 secondsEdit := tCal.AddEdit("Limit2 Number x" 60 + 140 + 140 " y" EDIT_Y_AXIS " w60 vSeconds c313131")
+CueBanners.SetEdit(secondsEdit, "SS", true)
 
 ; Add calculate buttons
 calculatePatternBtn := tCal.AddButton("x10 y" BTN_Y " w140", "Calculate from Pattern")
@@ -141,13 +150,47 @@ closeBtn := tCal.AddButton("x370 y8 w30", "✖")
 tCal.SetFont("s10 Bold c48ff00", "JetBrains Mono")
 resultText := tCal.AddText("x310 y" BTN_Y + 15 " w80")
 
-; Make window draggable
-OnMessage(0x201, WM_LBUTTONDOWN)
-WM_LBUTTONDOWN(wParam, lParam, msg, hwnd) {
-    static HTCAPTION := 2
-    if (hwnd = tCal.Hwnd)
-        PostMessage(0xA1, HTCAPTION)
+/*
+ * Get the code from: https://www.autohotkey.com/boards/viewtopic.php?t=29117
+ * Coverted to AutoHotkey v2 using claude.ai
+ */
+
+; Enable window dragging
+OnMessage(0x0201, WM_LBUTTONDOWN)
+
+FrameShadow(HGui) {
+    ; Check if DWM composition is enabled
+    _ISENABLED := 0
+    DllCall("dwmapi\DwmIsCompositionEnabled", "Int*", &_ISENABLED)
+    
+    if !_ISENABLED {
+        ; If DWM is not enabled, create basic shadow
+        DllCall("SetClassLong", "Ptr", HGui, "Int", -26, "Int", DllCall("GetClassLong", "Ptr", HGui, "Int", -26) | 0x20000)
+    } else {
+        ; Create DWM shadow
+        _MARGINS := Buffer(16, 0)
+        NumPut("UInt", 1, _MARGINS, 0)
+        NumPut("UInt", 1, _MARGINS, 4)
+        NumPut("UInt", 1, _MARGINS, 8)
+        NumPut("UInt", 1, _MARGINS, 12)
+        
+        DllCall("dwmapi\DwmSetWindowAttribute", 
+            "Ptr", HGui,
+            "UInt", 2,
+            "Int*", 2,
+            "UInt", 4)
+            
+        DllCall("dwmapi\DwmExtendFrameIntoClientArea",
+            "Ptr", HGui,
+            "Ptr", _MARGINS)
+    }
 }
+
+WM_LBUTTONDOWN(wParam, lParam, msg, hwnd) {
+    PostMessage(0xA1, 2, , , "A")
+}
+
+/** 👆🏼👆🏼👆🏼👆🏼👆🏼👆🏼👆🏼👆🏼👆🏼👆🏼👆🏼👆🏼👆🏼👆🏼👆🏼👆🏼👆🏼👆🏼👆🏼👆🏼 */
 
 ; Rest of the original functions
 TimeToHours(hours, minutes, seconds) {

@@ -20,7 +20,7 @@ An AutoHotkey v2 script that converts hours, minutes, and seconds into hours.
 
 ## 🛠️ Requirements
 
-[AutoHotkey v2.0](https://www.autohotkey.com/v2/) or later.
+[AutoHotkey v2.0](https://www.autohotkey.com/v2/) or higher.
 
 [GuiEnhancerKit library](https://github.com/nperovic/GuiEnhancerKit), to enhance the look and feel of AutoHotkey GUIs.
 
