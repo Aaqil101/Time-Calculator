@@ -1,5 +1,5 @@
-class ColorSchemes {
-    static Schemes := [
+class TC_ColorSchemes {
+    static TC_Schemes := [
         {   ; Red theme
             name: "Red",
             bg: "331111",
@@ -190,17 +190,17 @@ class ColorSchemes {
 
     ; Method to get scheme by name
     static GetSchemeByName(name) {
-        for scheme in this.Schemes {
+        for scheme in this.TC_Schemes {
             if (scheme.name = name)
                 return scheme
         }
-        return this.Schemes[1]  ; Return first scheme if not found
+        return this.TC_Schemes[1]  ; Return first scheme if not found
     }
 
     ; Method to get scheme names
     static GetSchemeNames() {
         names := []
-        for scheme in this.Schemes
+        for scheme in this.TC_Schemes
             names.Push(scheme.name)
         return names
     }

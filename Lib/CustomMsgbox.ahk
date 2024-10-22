@@ -9,7 +9,7 @@
  * @author Aaqil Ilyas
  * @link (https://github.com/Aaqil101/Custom-Libraries/tree/master/Custom%20Msgbox)
  * @created 2024-10-17
- * @version 2.1.0
+ * @version 2.5.0
  * @copyright 2024 Aaqil Ilyas
  **************************************************************************/
 
@@ -27,7 +27,7 @@
 
 #Include GuiEnhancerKit.ahk
 #Include ColorButton.ahk
-#Include ColorSchemes.ahk
+#Include CMB_ColorSchemes.ahk
 
 class CustomMsgBox {
     ; Add these constants at the top of the CustomMsgBox class

@@ -5,7 +5,7 @@
  * @author Aaqil Ilyas
  * @link (https://github.com/Aaqil101/Time-Calculator)
  * @created 2024-10-21
- * @version 2.0.1
+ * @version 2.5.1
  * @copyright 2024 Aaqil Ilyas
  **************************************************************************/
 
@@ -40,7 +40,7 @@ SetDefaultMouseSpeed 0
 * Include the ToolTipEx library, which allows you to create custom tooltips.
 * For more information, see https://github.com/nperovic/ToolTipEx
 
-* Include the ColorSchemes library, which allows you to create custom color schemes.
+* Include the TC_ColorSchemes library, which allows you to create custom color schemes.
 
 * Include the CueBanners library, which allows you to create placeholder for edit and combo boxes.
 * For more information, see https://github.com/Aaqil101/Custom-Libraries/tree/master/Cue%20Banners
@@ -51,7 +51,7 @@ SetDefaultMouseSpeed 0
 #Include Lib\CursorHandler.ahk
 #Include Lib\CustomMsgbox.ahk
 #Include Lib\ToolTipEx.ahk
-#Include Lib\ColorSchemes.ahk
+#Include Lib\TC_ColorSchemes.ahk
 #Include Lib\CueBanners.ahk
 
 ; Variables (keeping original variables)
@@ -70,6 +70,9 @@ FF_STOP := A_ScriptDir "\Lib\Icons\FF_Stop.png"
 FF_INFO := A_ScriptDir "\Lib\Icons\FF_Info.png"
 FF_QUESTION := A_ScriptDir "\Lib\Icons\FF_Question.png"
 TIME_CALCULATOR := A_ScriptDir "\Lib\Icons\TC_Icon.png"
+
+; Set Tray title
+A_IconTip := "Time Calculator"
 
 ; Set Tray icon
 TraySetIcon(TIME_CALCULATOR)
@@ -93,7 +96,7 @@ tCal.SetDarkMenu()
 textControls := []
 
 ; Select random scheme at startup
-randomScheme := ColorSchemes.Schemes[Random(1, ColorSchemes.Schemes.Length)]
+randomScheme := TC_ColorSchemes.TC_Schemes[Random(1, TC_ColorSchemes.TC_Schemes.Length)]
 ; Msgbox(randomScheme.name, "Random Color Scheme")
 
 ; Function to update GUI colors
@@ -258,11 +261,10 @@ CalculateFromFields(*) {
 }
 
 ShowError(message) {
-    CustomMsgBox.AddColorScheme("Error", "FF0000", "FFFFFF", "d46666")
     TraySetIcon(FF_STOP)
     msg := CustomMsgBox()
     msg.SetText("Error", message)
-    msg.SetPosition(SHOW_WIDTH, SHOW_HEIGHT + 255)
+    msg.SetPosition(SHOW_WIDTH, SHOW_HEIGHT + 258)
     msg.SetColorScheme("Error")
     msg.SetOptions("ToolWindow", "AlwaysOnTop")
     msg.SetCloseTimer(ERRORTIMER)
