@@ -78,9 +78,13 @@ TraySetIcon(TIME_CALCULATOR)
 tCal := GuiExt("AlwaysOnTop -Caption +Border")
 FrameShadow(tCal.Hwnd)
 
+; Add title bar icon
+tCal.AddPicture("x10 y5 w30 h30", TIME_CALCULATOR)
+
 ; Add title bar
 tCal.SetFont("s12 Bold cwhite", "Segoe UI")
-tCal.AddText("x10 y10 h30", "Time to Hours Calculator")
+; tCal.AddText("x10 y10 h30", "Time to Hours Calculator")
+tCal.AddText("x45 y12 h30", "Time to Hours Calculator")
 
 tCal.SetDarkTitle()
 tCal.SetDarkMenu()
@@ -115,9 +119,6 @@ UpdateColors(scheme) {
     ; Keep result text color as is for visibility
     resultText.Opt("c48ff00")
 }
-
-; Add color schemes
-CustomMsgBox.AddColorScheme("Error", "FF0000", "FFFFFF", "d46666")
 
 ; Pattern input section
 tCal.SetFont("s10 Bold cwhite", "JetBrains Mono")
@@ -257,6 +258,7 @@ CalculateFromFields(*) {
 }
 
 ShowError(message) {
+    CustomMsgBox.AddColorScheme("Error", "FF0000", "FFFFFF", "d46666")
     TraySetIcon(FF_STOP)
     msg := CustomMsgBox()
     msg.SetText("Error", message)
