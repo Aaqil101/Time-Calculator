@@ -3,26 +3,51 @@ import sys
 from pathlib import Path
 
 # ----- PyQt6 Modules -----
-from PyQt6.QtCore import (
-    QEasingCurve,
-    QPropertyAnimation,
-    QRegularExpression,
-    Qt,
-    QTimer,
-)
+from PyQt6.QtCore import QPropertyAnimation, QRect, QRegularExpression, Qt, QTimer
 from PyQt6.QtGui import QFont, QGuiApplication, QIcon, QRegularExpressionValidator
-from PyQt6.QtWidgets import (
-    QApplication,
-    QFrame,
-    QGraphicsDropShadowEffect,
-    QGraphicsOpacityEffect,
-    QHBoxLayout,
-    QLabel,
-    QLineEdit,
-    QMessageBox,
-    QVBoxLayout,
-    QWidget,
-)
+from PyQt6.QtWidgets import QApplication, QLineEdit, QMessageBox, QVBoxLayout, QWidget
+
+# ----- Configurable Constants -----
+MessageIcon: Path = Path(__file__).parent / "Assets" / "Info.ico"
+
+
+def msg_box(
+    *,
+    title: str,
+    text: str,
+    icon: QMessageBox.Icon,
+    icon_path: Path,
+    buttons: QMessageBox.StandardButton,
+    timeout: int = 5_000,
+) -> int:
+    """
+    Displays a modal message box with a custom title, text, icon, and buttons, and automatically closes it after a specified timeout.
+    Parameters:
+        title (str): The title of the message box window.
+        text (str): The main text displayed in the message box.
+        icon (QMessageBox.Icon): The icon to display in the message box (e.g., information, warning, critical).
+        icon_path (Path): The file path to the window icon for the message box.
+        buttons (QMessageBox.StandardButton): The standard buttons to display (e.g., Ok, Cancel).
+        timeout (int, optional): The time in milliseconds before the message box automatically closes. Defaults to 5,000 ms (5 seconds).
+    Returns:
+        int: The result code indicating which button was pressed, or -1 if the message box was closed automatically due to timeout.
+    """
+    msg_box = QMessageBox()
+    msg_box.setWindowFlag(Qt.WindowType.WindowStaysOnTopHint)  # 👈 Always on top
+    msg_box.setWindowTitle(title)
+    msg_box.setText(text)
+    msg_box.setIcon(icon)
+    msg_box.setWindowIcon(QIcon(str(icon_path)))
+    msg_box.setStandardButtons(buttons)
+    msg_box.setModal(True)
+
+    # Set a timer to close the box after some seconds
+    def auto_close() -> None:
+        msg_box.done(-1)  # simulate cancel/timeout
+
+    QTimer.singleShot(timeout, auto_close)
+
+    msg_box.exec()
 
 
 class TimeConverter(QWidget):
@@ -30,7 +55,7 @@ class TimeConverter(QWidget):
         super().__init__()
         self.setWindowTitle("Time to Decimal Hours")
         self.setWindowFlag(Qt.WindowType.WindowStaysOnTopHint)  # 👈 Always on top
-        self.setFixedSize(550, 420)
+        self.setFixedSize(350, 70)
 
         # Window Icon Path
         IconPath: Path = Path(__file__).parent / "Assets" / "AppIcon.ico"
@@ -50,51 +75,10 @@ class TimeConverter(QWidget):
         )
 
         self.init_ui()
+        self.center_on_screen()
 
     def init_ui(self) -> None:
         main_layout = QVBoxLayout()
-        main_layout.setContentsMargins(40, 40, 40, 40)
-        main_layout.setSpacing(25)
-
-        # Create card-like container
-        card = QFrame()
-        card.setStyleSheet(
-            """
-            QFrame {
-                background-color: rgba(255, 255, 255, 0.05);
-                border-radius: 15px;
-                padding: 20px;
-            }
-            """
-        )
-
-        # Add shadow effect
-        shadow = QGraphicsDropShadowEffect()
-        shadow.setBlurRadius(20)
-        shadow.setColor(Qt.GlobalColor.black)
-        shadow.setOffset(0, 0)
-        card.setGraphicsEffect(shadow)
-
-        card_layout = QVBoxLayout(card)
-        card_layout.setSpacing(20)
-
-        # Enhanced Title Label
-        title = QLabel("Convert Time to Decimal Hours")
-        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title.setFont(QFont("JetBrainsMono Nerd Font", 16, QFont.Weight.Bold))
-        title.setStyleSheet(
-            """
-            color: #e0e0e0;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            """
-        )
-        card_layout.addWidget(title)
-
-        # Input Layout with modern styling
-        input_layout = QHBoxLayout()
-        input_layout.setSpacing(15)
 
         self.input_field = QLineEdit()
         self.input_field.setPlaceholderText("Enter time (HH:MM:SS)")
@@ -120,39 +104,25 @@ class TimeConverter(QWidget):
         validator = QRegularExpressionValidator(regex)
         self.input_field.setValidator(validator)
 
-        input_layout.addWidget(self.input_field)
-
-        card_layout.addLayout(input_layout)
-
-        # Enhanced Output Label
-        self.output_label = QLabel("")
+        self.output_label = QLineEdit()
+        self.output_label.setReadOnly(True)
         self.output_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.output_label.setFont(
-            QFont("JetBrainsMono Nerd Font", 14, QFont.Weight.Bold)
-        )
+        self.output_label.setFont(QFont("JetBrainsMono Nerd Font", 12))
         self.output_label.setStyleSheet(
             """
-            color: #6c63ff;
-            padding: 15px;
-            background: rgba(108, 99, 255, 0.1);
-            border-radius: 8px;
+            QLineEdit {
+                padding: 12px;
+                border: 2px solid #6c63ff;
+                border-radius: 8px;
+                background-color: rgba(255, 255, 255, 0.1);
+                color: #00ff99;
+            }
             """
         )
+        self.output_label.hide()
 
-        self.opacity_effect = QGraphicsOpacityEffect()
-        self.output_label.setGraphicsEffect(self.opacity_effect)
-        self.opacity_effect.setOpacity(0)  # Initially invisible
-
-        card_layout.addWidget(self.output_label)
-
-        main_layout.addWidget(card)
-
-        # Modern Footer
-        footer = QLabel("Built with ❤️ using PyQt6")
-        footer.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        footer.setFont(QFont("JetBrainsMono Nerd Font", 10))
-        footer.setStyleSheet("color: #8a8a8a;")
-        main_layout.addWidget(footer)
+        main_layout.addWidget(self.input_field)
+        main_layout.addWidget(self.output_label)
 
         self.setLayout(main_layout)
 
@@ -171,41 +141,50 @@ class TimeConverter(QWidget):
             total_hours: float = h + m / 60 + s / 3600
             rounded_hours: float = round(total_hours, 2)
 
-            # Show and animate output
-            self.output_label.setText(f"✨ {rounded_hours} hours")
-            self.animate_fade_in()
+            # Copy to clipboard
+            QGuiApplication.clipboard().setText(f"{rounded_hours}")
 
-            # 🔁 Fade out after 1000 ms (1 second)
-            QTimer.singleShot(1_000, self.animate_fade_out)
+            # Update output text
+            self.output_label.setText(f"✨ {rounded_hours}")
 
-            # 🔗 Copy to clipboard
-            clipboard = QGuiApplication.clipboard()
-            clipboard.setText(f"{rounded_hours}")
+            # Show output and expand window
+            self.output_label.show()
+            self.setFixedHeight(120)
 
-            self.input_field.clear()
+            # Schedule hiding after delay
+            def hide_output() -> None:
+                self.output_label.hide()
+                self.setFixedHeight(70)
+                self.input_field.clear()
+
+            QTimer.singleShot(1_000, hide_output)
+
         except ValueError:
-            QMessageBox.warning(
-                self,
-                "Invalid Format",
-                "Please enter time in HH:MM:SS format (e.g. 01:30:00).",
+            msg_box(
+                title="Invalid Format",
+                text="Please enter time in HH:MM:SS format (e.g. 01:30:00).",
+                icon=QMessageBox.Icon.Warning,
+                icon_path=MessageIcon,
+                buttons=QMessageBox.StandardButton.Ok,
             )
-            self.output_label.setText("")
 
-    def animate_fade_in(self) -> None:
-        self.fade_in_anim = QPropertyAnimation(self.opacity_effect, b"opacity")
-        self.fade_in_anim.setDuration(300)
-        self.fade_in_anim.setStartValue(0)
-        self.fade_in_anim.setEndValue(1)
-        self.fade_in_anim.setEasingCurve(QEasingCurve.Type.OutCubic)
-        self.fade_in_anim.start()
+    def center_on_screen(self) -> None:
+        """Centers the window on the current screen."""
+        # Get the current screen where the window is
+        app_instance = QApplication.instance()
+        current_screen = (
+            app_instance.screenAt(self.pos()) or app_instance.primaryScreen()
+        )
 
-    def animate_fade_out(self) -> None:
-        self.fade_out_anim = QPropertyAnimation(self.opacity_effect, b"opacity")
-        self.fade_out_anim.setDuration(300)
-        self.fade_out_anim.setStartValue(1)
-        self.fade_out_anim.setEndValue(0)
-        self.fade_out_anim.setEasingCurve(QEasingCurve.Type.InCubic)
-        self.fade_out_anim.start()
+        # Get the geometry of the screen
+        screen_geometry = current_screen.availableGeometry()
+
+        # Calculate the center position
+        x = (screen_geometry.width() - self.width()) // 2 + screen_geometry.x()
+        y = (screen_geometry.height() - self.height()) // 2 + screen_geometry.y()
+
+        # Move the window
+        self.move(x, y)
 
     def keyPressEvent(self, event) -> None:
         key = event.key()
@@ -216,10 +195,6 @@ class TimeConverter(QWidget):
 
         if key in (Qt.Key.Key_Enter, Qt.Key.Key_Return):
             self.convert_time()
-            return
-
-        if key == Qt.Key.Key_F:
-            self.input_field.setFocus()
             return
 
         super().keyPressEvent(event)
